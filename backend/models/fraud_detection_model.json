@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "created_at": "2025-10-28T18:28:34.571018+00:00",
+  "parameters": [
+    "transaction_amount",
+    "transaction_type",
+    "transaction_time",
+    "transaction_frequency",
+    "merchant_category",
+    "cross_border",
+    "login_location",
+    "device_fingerprint",
+    "session_duration",
+    "failed_attempts",
+    "kyc_mismatch",
+    "recipient_vpa",
+    "recipient_history",
+    "merchant_trust",
+    "ip_geolocation",
+    "vpn_usage",
+    "device_version",
+    "two_factor_auth",
+    "fraud_history",
+    "transaction_velocity",
+    "behavioral_patterns"
+  ],
+  "thresholds": {
+    "high_risk": 70,
+    "medium_risk": 40,
+    "fraud_flag": 65
+  }
+}

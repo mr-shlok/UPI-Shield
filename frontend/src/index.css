@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Simple animated background dots */
+.animated-bg {
+  position: fixed;
+  top: 64px; /* Start below header */
+  left: 0;
+  width: 100%;
+  height: calc(100% - 64px); /* Exclude header height */
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.animated-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.7);
+  filter: blur(1px);
+  animation: float 200s infinite linear;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(100px, 100px);
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-gray-950 text-gray-100;
+    font-family: system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Add pointer cursor to all interactive elements */
+  button,
+  a,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select,
+  label {
+    cursor: pointer !important;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-red {
+    @apply bg-gradient-to-r from-red-400 via-red-500 to-rose-600 bg-clip-text text-transparent;
+  }
+  
+  .bg-dark-gradient {
+    @apply bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950;
+  }
+  
+  .glass-effect {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  
+  .glow-amber {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+  }
+  
+  .glow-red {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4), 0 0 40px rgba(239, 68, 68, 0.2);
+  }
+  
+  .glow-red-strong {
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.6), 0 0 60px rgba(239, 68, 68, 0.3);
+  }
+  
+  /* Utility class for clickable elements */
+  .clickable {
+    cursor: pointer !important;
+  }
+}

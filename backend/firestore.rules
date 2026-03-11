@@ -1,0 +1,108 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isModerator() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'moderator';
+    }
+    
+    function hasRole(role) {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+    
+    // Users Collection
+    match /users/{userId} {
+      // Anyone can read their own user data
+      allow read: if isOwner(userId) || isAdmin() || isModerator();
+      
+      // Users can create their own profile during registration
+      allow create: if isAuthenticated() && isOwner(userId);
+      
+      // Users can update their own profile (except role)
+      allow update: if isOwner(userId) && 
+                      (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'uid', 'created_at']));
+      
+      // Only admins can update roles
+      allow update: if isAdmin() &&
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'is_active', 'updated_at']);
+      
+      // Only admins can delete users
+      allow delete: if isAdmin();
+    }
+    
+    // Transactions Collection
+    match /transactions/{transactionId} {
+      // Users can only read their own transactions
+      allow read: if isOwner(resource.data.uid) || isAdmin() || isModerator();
+      
+      // Users can create transactions for themselves
+      allow create: if isAuthenticated() && 
+                      isOwner(request.resource.data.uid) &&
+                      request.resource.data.amount is number &&
+                      request.resource.data.amount > 0 &&
+                      request.resource.data.amount <= 100000; // Max ₹1 lakh
+      
+      // Transactions can be updated (for status changes)
+      allow update: if isOwner(resource.data.uid) || isAdmin();
+      
+      // Only admins can delete transactions
+      allow delete: if isAdmin();
+    }
+    
+    // Fraud Logs Collection
+    match /fraud_logs/{logId} {
+      // Only authorized personnel can read fraud logs
+      allow read: if isAdmin() || isModerator();
+      
+      // System can create fraud logs (backend service account)
+      allow create: if true; // Backend service account will create these
+      
+      // No updates or deletes allowed (audit trail)
+      allow update, delete: if false;
+    }
+    
+    // Sessions Collection
+    match /sessions/{sessionId} {
+      // Users can read their own sessions
+      allow read: if isAuthenticated() && 
+                    resource.data.uid == request.auth.uid;
+      
+      // System creates sessions
+      allow create: if true;
+      
+      // Users can invalidate their own sessions
+      allow update: if isAuthenticated() && 
+                      resource.data.uid == request.auth.uid &&
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['is_active', 'revoked_at']);
+      
+      // Admins can manage all sessions
+      allow update, delete: if isAdmin();
+    }
+    
+    // Admin-only collections
+    match /admin/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
