@@ -80,9 +80,14 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-5. Run the Flask server:
+5. Run the Flask server (Local Mock Mode):
 ```bash
-python app.py
+python app_new.py
+```
+
+For full Firebase integration (requires credentials):
+```bash
+python app_firebase.py
 ```
 
 The backend API will be available at `http://localhost:5000`
@@ -233,8 +238,10 @@ This will register a test user, create transactions, and verify the endpoints ar
 - `npm run preview` - Preview production build
 
 Backend:
-- `python app.py` - Start Flask server
-- `flask run` - Alternative way to run server
+- `python app_new.py` - Start Flask server in Local Mock Mode (Recommended)
+- `python train_fraud_model.py` - Train the fraud detection model locally
+- `python debug_transaction.py` - Run an end-to-end test of the mock flow
+- `python app.py` - Start standard Flask server
 
 ## 📄 License
 

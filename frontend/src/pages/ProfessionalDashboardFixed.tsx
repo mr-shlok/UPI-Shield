@@ -14,78 +14,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Mock data for charts and tables
-const summaryData = [
-  { name: 'Total Transactions', value: 1247, change: '+12%', color: 'blue' },
-  { name: 'Fraudulent Transactions', value: 23, change: '-5%', color: 'red' },
-  { name: 'Amount at Risk', value: '₹2,34,000', change: '-8%', color: 'orange' },
-  { name: 'Fraud Risk Score', value: '76%', change: '-3%', color: 'purple' },
-  { name: 'Last Scanned', value: '2 mins ago', change: 'Real-time', color: 'green' }
-];
-
-const transactionData = [
-  { date: 'Oct 20', transactions: 45, fraud: 2 },
-  { date: 'Oct 21', transactions: 52, fraud: 1 },
-  { date: 'Oct 22', transactions: 48, fraud: 3 },
-  { date: 'Oct 23', transactions: 61, fraud: 0 },
-  { date: 'Oct 24', transactions: 55, fraud: 2 },
-  { date: 'Oct 25', transactions: 49, fraud: 1 },
-  { date: 'Oct 26', transactions: 58, fraud: 4 },
-  { date: 'Oct 27', transactions: 53, fraud: 2 }
-];
-
-const categoryData = [
-  { name: 'Bank Transfers', value: 320 },
-  { name: 'Merchant Payments', value: 450 },
-  { name: 'Peer-to-Peer', value: 280 },
-  { name: 'Bill Payments', value: 190 }
-];
-
-const fraudPieData = [
-  { name: 'Safe', value: 1180 },
-  { name: 'Suspicious', value: 45 },
-  { name: 'Fraud', value: 22 }
-];
-
-const COLORS = ['#10B981', '#F59E0B', '#EF4444'];
-
-const recentAlerts = [
-  { 
-    date: '27 Oct 2025', 
-    transactionId: 'TXN38472', 
-    receiver: '@upi123', 
-    amount: '₹3,000', 
-    status: 'Suspicious', 
-    riskScore: '87%', 
-    action: 'View' 
-  },
-  { 
-    date: '27 Oct 2025', 
-    transactionId: 'TXN38471', 
-    receiver: '@paytm456', 
-    amount: '₹1,200', 
-    status: 'Safe', 
-    riskScore: '12%', 
-    action: 'View' 
-  },
-  { 
-    date: '26 Oct 2025', 
-    transactionId: 'TXN38470', 
-    receiver: '@gpay789', 
-    amount: '₹7,500', 
-    status: 'Fraud', 
-    riskScore: '95%', 
-    action: 'View' 
-  },
-  { 
-    date: '26 Oct 2025', 
-    transactionId: 'TXN38469', 
-    receiver: '@phonepe123', 
-    amount: '₹500', 
-    status: 'Safe', 
-    riskScore: '5%', 
-    action: 'View' 
-  }
-];
+// Initial mock data moved to state within component
 
 const activityLog = [
   { time: '10:45 PM', action: 'Password changed', type: 'security' },
@@ -175,6 +104,44 @@ const ProfessionalDashboardFixed: React.FC = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { id: 1, text: "Hello! I'm your AI fraud protection assistant. How can I help you today?", isUser: false, timestamp: new Date().toLocaleTimeString() }
   ]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotification, setShowNotification] = useState(false);
+  const [latestNotification, setLatestNotification] = useState<any>(null);
+
+  // Dynamic Dashboard States
+  const [summaryData, setSummaryData] = useState([
+    { name: 'Total Transactions', value: 1, change: '+100%', color: 'blue' },
+    { name: 'Fraudulent Transactions', value: 0, change: '0%', color: 'red' },
+    { name: 'Amount at Risk', value: '₹50,000', change: 'Stable', color: 'orange' },
+    { name: 'Fraud Risk Score', value: '0%', change: 'Low', color: 'purple' },
+    { name: 'Last Scanned', value: 'Just now', change: 'Real-time', color: 'green' }
+  ]);
+
+  const [transactionData, setTransactionData] = useState([
+    { date: 'Oct 20', transactions: 0, fraud: 0 },
+    { date: 'Oct 21', transactions: 0, fraud: 0 },
+    { date: 'Oct 22', transactions: 0, fraud: 0 },
+    { date: 'Oct 23', transactions: 0, fraud: 0 },
+    { date: 'Oct 24', transactions: 0, fraud: 0 },
+    { date: 'Oct 25', transactions: 0, fraud: 0 },
+    { date: 'Oct 26', transactions: 0, fraud: 0 },
+    { date: 'Oct 27', transactions: 1, fraud: 0 }
+  ]);
+
+  const [categoryData, setCategoryData] = useState([
+    { name: 'Bank Transfers', value: 0 },
+    { name: 'Merchant Payments', value: 0 },
+    { name: 'Peer-to-Peer', value: 1 },
+    { name: 'Bill Payments', value: 0 }
+  ]);
+
+  const [fraudPieData, setFraudPieData] = useState([
+    { name: 'Safe', value: 1 },
+    { name: 'Suspicious', value: 0 },
+    { name: 'Fraud', value: 0 }
+  ]);
+
+  const [recentAlerts, setRecentAlerts] = useState<any[]>([]);
 
   // Add transaction history state
   const [transactionHistory, setTransactionHistory] = useState<any[]>([]);
@@ -434,14 +401,85 @@ const ProfessionalDashboardFixed: React.FC = () => {
       
       setTransactionHistory(prev => [newTransaction, ...prev]);
       
-      // Reset form after success
+      // Add notification
+      const debitNotification = {
+        id: Date.now(),
+        title: 'Amount Debited',
+        message: `₹${amountNum} was debited from your account to ${recipientName}.`,
+        time: 'Just now',
+        type: 'debit'
+      };
+      setNotifications(prev => [debitNotification, ...prev]);
+      setLatestNotification(debitNotification);
+      setShowNotification(true);
+
+      // Update Dashboard States Instantly
+      setSummaryData(prev => {
+        const newData = [...prev];
+        // Total Transactions
+        const totalIdx = newData.findIndex(d => d.name === 'Total Transactions');
+        if (totalIdx !== -1) {
+          const currentVal = typeof newData[totalIdx].value === 'number' ? newData[totalIdx].value : parseInt(String(newData[totalIdx].value).replace(/,/g, ''));
+          newData[totalIdx].value = currentVal + 1;
+        }
+        // Amount at Risk (updating with current transaction amount for demonstration)
+        const riskIdx = newData.findIndex(d => d.name === 'Amount at Risk');
+        if (riskIdx !== -1) {
+          newData[riskIdx].value = `₹${amountNum.toLocaleString()}`;
+        }
+        // Fraud Risk Score
+        const scoreIdx = newData.findIndex(d => d.name === 'Fraud Risk Score');
+        if (scoreIdx !== -1) {
+          newData[scoreIdx].value = analysisResult.risk_score ? `${analysisResult.risk_score}%` : '0%';
+        }
+        return newData;
+      });
+
+      setTransactionData(prev => {
+        const newData = [...prev];
+        const lastDay = newData[newData.length - 1];
+        lastDay.transactions += 1;
+        if (analysisResult.is_fraudulent) lastDay.fraud += 1;
+        return newData;
+      });
+
+      setFraudPieData(prev => {
+        const newData = [...prev];
+        if (analysisResult.is_fraudulent) {
+          newData[2].value += 1; // Fraud
+        } else if (analysisResult.risk_score > 50) {
+          newData[1].value += 1; // Suspicious
+        } else {
+          newData[0].value += 1; // Safe
+        }
+        return newData;
+      });
+
+      // Add to recent alerts if it's not safe
+      if (analysisResult.is_fraudulent || analysisResult.risk_score > 30) {
+        const newAlert = {
+          date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+          transactionId: result.transaction_id || `TXN${Date.now()}`,
+          receiver: recipientName,
+          amount: `₹${amountNum.toLocaleString()}`,
+          status: analysisResult.is_fraudulent ? 'Fraud' : 'Suspicious',
+          riskScore: `${analysisResult.risk_score}%`,
+          action: 'View'
+        };
+        setRecentAlerts(prev => [newAlert, ...prev]);
+      }
+
+      // Instant Reset for form (but keep notification for feedback)
+      setPayModalOpen(false);
+      setUpiId('');
+      setAmount('');
+      setRecipientName('');
+      
+      // Keep notification for 4 seconds then hide
       setTimeout(() => {
-        setPayModalOpen(false);
         setPaymentSuccess(false);
-        setUpiId('');
-        setAmount('');
-        setRecipientName('');
-      }, 3000);
+        setShowNotification(false);
+      }, 4000);
       
     } catch (error: any) {
       console.error('Payment error:', error);
@@ -1273,6 +1311,29 @@ const ProfessionalDashboardFixed: React.FC = () => {
                 </p>
               </form>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Notification Toast */}
+      <AnimatePresence>
+        {showNotification && latestNotification && (
+          <motion.div
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 100 }}
+            className="fixed top-24 right-4 z-[60] bg-blue-600 text-white p-4 rounded-xl shadow-2xl flex items-center space-x-4 border border-blue-400"
+          >
+            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+              <FiBell size={20} />
+            </div>
+            <div>
+              <h4 className="font-bold">{latestNotification.title}</h4>
+              <p className="text-sm text-blue-100">{latestNotification.message}</p>
+            </div>
+            <button onClick={() => setShowNotification(false)} className="pl-2">
+              <FiX size={18} />
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

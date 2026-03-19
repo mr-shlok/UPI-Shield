@@ -68,7 +68,27 @@ class AuthService {
   // Login with email and password
   async login(data: LoginData): Promise<AuthResponse> {
     try {
-      // First, try to sign in with Firebase Client SDK
+      // First, attempt direct backend login (useful for local development/mock mode)
+      try {
+        const response = await api.post('/auth/login', data);
+        if (response.data.success) {
+          // Store session data
+          localStorage.setItem('session_token', response.data.session_token);
+          localStorage.setItem('session_id', response.data.session_id);
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          
+          return {
+            success: true,
+            user: response.data.user,
+            session_token: response.data.session_token,
+            session_id: response.data.session_id
+          };
+        }
+      } catch (backendError: any) {
+        console.warn('Backend login failed, falling back to Firebase:', backendError);
+      }
+
+      // Fallback: try to sign in with Firebase Client SDK
       const { signInWithEmailAndPassword, getAuth } = await import('firebase/auth');
       const auth = getAuth();
       

@@ -3,6 +3,7 @@ Authentication routes using AWS Cognito
 """
 from flask import Blueprint, request, jsonify
 from functools import wraps
+import uuid
 from services.cognito_service import cognito_service
 from services.dynamodb_service import db_service
 
@@ -52,19 +53,21 @@ def register():
         data = request.get_json()
         
         # Validate required fields
-        required_fields = ['email', 'password', 'name']
-        for field in required_fields:
-            if field not in data:
-                return jsonify({
-                    'success': False,
-                    'error': f'Missing required field: {field}'
-                }), 400
+        email = data.get('email')
+        password = data.get('password')
+        name = data.get('name') or data.get('display_name')
+        
+        if not email or not password or not name:
+            return jsonify({
+                'success': False,
+                'error': 'Missing required fields: email, password, and name/display_name'
+            }), 400
         
         # Register with Cognito
         cognito_result = cognito_service.sign_up(
-            email=data['email'],
-            password=data['password'],
-            name=data['name'],
+            email=email,
+            password=password,
+            name=name,
             phone=data.get('phone')
         )
         
@@ -75,7 +78,7 @@ def register():
         db_result = db_service.create_user({
             'email': data['email'],
             'cognito_sub': cognito_result['user_sub'],
-            'name': data['name'],
+            'name': name,
             'phone': data.get('phone', '')
         })
         
@@ -196,16 +199,26 @@ def login():
         
         response_data = {
             'success': True,
+            'session_token': 'mock-session-token-' + str(uuid.uuid4())[:8],
+            'session_id': 'mock-session-id-' + str(uuid.uuid4())[:8],
             'tokens': {
-                'access_token': cognito_result['access_token'],
-                'id_token': cognito_result['id_token'],
-                'refresh_token': cognito_result['refresh_token'],
-                'expires_in': cognito_result['expires_in']
+                'access_token': cognito_result.get('access_token', 'mock-access'),
+                'id_token': cognito_result.get('id_token', 'mock-id'),
+                'refresh_token': cognito_result.get('refresh_token', 'mock-refresh'),
+                'expires_in': cognito_result.get('expires_in', 3600)
             }
         }
         
         if user_result['success']:
             response_data['user'] = user_result['data']
+        else:
+            # Provide mock user if not found in mock mode
+            response_data['user'] = {
+                'user_id': 'mock-user-123',
+                'email': data['email'],
+                'name': 'Mock User',
+                'role': 'user'
+            }
         
         return jsonify(response_data), 200
         
@@ -214,6 +227,59 @@ def login():
             'success': False,
             'error': str(e)
         }), 500
+
+
+@auth_bp.route('/verify-token', methods=['POST'])
+def verify_token():
+    """
+    Mock Firebase token verification for local development
+    """
+    try:
+        data = request.get_json()
+        if 'id_token' not in data:
+            return jsonify({
+                'success': False,
+                'error': 'ID token is required'
+            }), 400
+        
+        # In mock mode, we just return a valid session
+        return jsonify({
+            'success': True,
+            'message': 'Login successful (Mocked)',
+            'session_token': 'mock-session-token-' + str(uuid.uuid4())[:8],
+            'session_id': 'mock-session-id-' + str(uuid.uuid4())[:8],
+            'user': {
+                'user_id': 'mock-user-123',
+                'email': 'mock@example.com',
+                'name': 'Mock User',
+                'role': 'user'
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@auth_bp.route('/social-login', methods=['POST'])
+def social_login():
+    """
+    Mock social login for local development
+    """
+    try:
+        data = request.get_json()
+        return jsonify({
+            'success': True,
+            'message': 'Social login successful (Mocked)',
+            'session_token': 'mock-social-token-' + str(uuid.uuid4())[:8],
+            'session_id': 'mock-social-id-' + str(uuid.uuid4())[:8],
+            'user': {
+                'user_id': 'mock-social-user-123',
+                'email': 'social@example.com',
+                'name': data.get('display_name', 'Social User'),
+                'role': 'user'
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @auth_bp.route('/refresh', methods=['POST'])

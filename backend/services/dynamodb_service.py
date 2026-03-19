@@ -4,7 +4,7 @@ AWS DynamoDB service for database operations with KMS encryption
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid
 from config import Config
 
@@ -14,19 +14,38 @@ class DynamoDBService:
     
     def __init__(self):
         """Initialize DynamoDB client"""
-        self.dynamodb = boto3.resource(
-            'dynamodb',
-            region_name=Config.DYNAMODB_REGION
-        )
-        self.client = boto3.client(
-            'dynamodb',
-            region_name=Config.DYNAMODB_REGION
-        )
-        
-        # Table references
-        self.users_table = self.dynamodb.Table(Config.DYNAMODB_TABLE_USERS)
-        self.transactions_table = self.dynamodb.Table(Config.DYNAMODB_TABLE_TRANSACTIONS)
-        self.fraud_logs_table = self.dynamodb.Table(Config.DYNAMODB_TABLE_FRAUD_LOGS)
+        if not Config.KMS_KEY_ID or 'your-' in Config.KMS_KEY_ID:
+            print("⚠️  KMS_KEY_ID missing or using placeholder, entering Mock Mode")
+            self.mock_mode = True
+            self.dynamodb = None
+            self.client = None
+            self.users_table = None
+            self.transactions_table = None
+            self.fraud_logs_table = None
+        else:
+            try:
+                self.dynamodb = boto3.resource(
+                    'dynamodb',
+                    region_name=Config.DYNAMODB_REGION
+                )
+                self.client = boto3.client(
+                    'dynamodb',
+                    region_name=Config.DYNAMODB_REGION
+                )
+                
+                # Table references
+                self.users_table = self.dynamodb.Table(Config.DYNAMODB_TABLE_USERS)
+                self.transactions_table = self.dynamodb.Table(Config.DYNAMODB_TABLE_TRANSACTIONS)
+                self.fraud_logs_table = self.dynamodb.Table(Config.DYNAMODB_TABLE_FRAUD_LOGS)
+                self.mock_mode = False
+            except Exception as e:
+                print(f"⚠️  DynamoDB initialization failed: {e}, entering Mock Mode")
+                self.mock_mode = True
+                self.dynamodb = None
+                self.client = None
+                self.users_table = None
+                self.transactions_table = None
+                self.fraud_logs_table = None
     
     def create_tables(self):
         """Create DynamoDB tables with KMS encryption if they don't exist"""
@@ -187,6 +206,12 @@ class DynamoDBService:
     # User Operations
     def create_user(self, user_data):
         """Create a new user"""
+        if self.mock_mode:
+            return {
+                'success': True,
+                'message': 'Mock user created successfully',
+                'user_id': str(uuid.uuid4())
+            }
         try:
             user_id = str(uuid.uuid4())
             item = {
@@ -205,11 +230,13 @@ class DynamoDBService:
             self.users_table.put_item(Item=item)
             return {'success': True, 'user_id': user_id, 'data': item}
             
-        except ClientError as e:
+        except Exception as e:
             return {'success': False, 'error': str(e)}
     
     def get_user_by_email(self, email):
         """Get user by email"""
+        if self.mock_mode:
+            return {'success': True, 'data': {'email': email, 'name': 'Mock User', 'user_id': 'mock-123'}}
         try:
             response = self.users_table.query(
                 IndexName='email-index',
@@ -220,11 +247,13 @@ class DynamoDBService:
                 return {'success': True, 'data': response['Items'][0]}
             return {'success': False, 'error': 'User not found'}
             
-        except ClientError as e:
+        except Exception as e:
             return {'success': False, 'error': str(e)}
     
     def get_user(self, user_id):
         """Get user by ID"""
+        if self.mock_mode:
+            return {'success': True, 'data': {'user_id': user_id, 'email': 'mock@example.com', 'name': 'Mock User'}}
         try:
             response = self.users_table.get_item(Key={'user_id': user_id})
             
@@ -237,6 +266,9 @@ class DynamoDBService:
     
     def update_user(self, user_id, update_data):
         """Update user information"""
+        if self.mock_mode:
+            mock_data = {'user_id': user_id, 'email': 'mock@example.com', 'name': 'Mock User', **update_data}
+            return {'success': True, 'data': mock_data}
         try:
             update_data['updated_at'] = datetime.utcnow().isoformat()
             
@@ -264,6 +296,14 @@ class DynamoDBService:
     # Transaction Operations
     def create_transaction(self, transaction_data):
         """Create a new transaction record"""
+        if self.mock_mode:
+            # Check if transaction_id was provided, else generate
+            transaction_id = transaction_data.get('transaction_id') or ('mock-tx-' + str(uuid.uuid4())[:8])
+            return {
+                'success': True,
+                'message': 'Mock transaction created successfully',
+                'transaction_id': transaction_id
+            }
         try:
             transaction_id = f"TXN-{uuid.uuid4().hex[:12].upper()}"
             item = {
@@ -286,8 +326,36 @@ class DynamoDBService:
             return {'success': False, 'error': str(e)}
     
     def get_user_transactions(self, user_id, limit=50):
-        """Get transactions for a user"""
+        """Get recent transactions for a user"""
         try:
+            if self.mock_mode:
+                return {
+                    'success': True, 
+                    'data': [
+                        {
+                            'transaction_id': 'mock-tx-1',
+                            'amount': 1500,
+                            'recipient_name': 'Aman Gupta',
+                            'recipient_upi': 'aman@okhdfc',
+                            'timestamp': (datetime.utcnow() - timedelta(hours=2)).isoformat(),
+                            'status': 'completed',
+                            'is_fraudulent': False,
+                            'risk_level': 'low'
+                        },
+                        {
+                            'transaction_id': 'mock-tx-2',
+                            'amount': 50000,
+                            'recipient_name': 'Dhrup',
+                            'recipient_upi': 'dhrup@icici',
+                            'timestamp': (datetime.utcnow() - timedelta(days=1)).isoformat(),
+                            'status': 'flagged',
+                            'is_fraudulent': True,
+                            'risk_level': 'high',
+                            'risk_score': 85
+                        }
+                    ]
+                }
+            
             response = self.transactions_table.query(
                 IndexName='user-id-index',
                 KeyConditionExpression=Key('user_id').eq(user_id),

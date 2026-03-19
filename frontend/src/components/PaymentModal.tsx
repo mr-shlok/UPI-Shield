@@ -102,7 +102,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, onPaymentS
         setAmount('');
         setRecipientName('');
         setSuccess(false);
-      }, 2000);
+      }, 500);
 
     } catch (err: any) {
       console.error('Payment error:', err);

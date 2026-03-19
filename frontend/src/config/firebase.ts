@@ -9,7 +9,8 @@ const firebaseConfig = {
   projectId: "upi-shield-abc05",
   storageBucket: "upi-shield-abc05.firebasestorage.app",
   messagingSenderId: "908989066745",
-  appId: "1:908989066745:web:2318d5f3b9aae7f0906128"
+  appId: "1:908989066745:web:2318d5f3b9aae7f0906128",
+  measurementId: "G-X8JQK9D356"
 };
 
 // Initialize Firebase

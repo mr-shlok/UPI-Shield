@@ -48,8 +48,10 @@ const TransactionList: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return 'Just now';
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Recently';
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
@@ -147,7 +149,7 @@ const TransactionList: React.FC = () => {
               <div className="text-right">
                 <p className="font-medium text-white">₹{transaction.amount.toLocaleString()}</p>
                 <div className="flex items-center space-x-2 mt-1">
-                  <span className="text-xs text-gray-400">{formatDate(transaction.created_at)}</span>
+                  <span className="text-xs text-gray-400">{formatDate(transaction.created_at || (transaction as any).timestamp)}</span>
                   {getStatusBadge(transaction.is_fraudulent, transaction.risk_level)}
                 </div>
               </div>

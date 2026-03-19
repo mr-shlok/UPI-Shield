@@ -7,6 +7,7 @@ from flask_cors import CORS
 from datetime import datetime
 import sys
 import os
+import uuid
 
 # Add backend directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -144,6 +145,76 @@ def get_dashboard_data():
             'success': False,
             'error': str(e)
         }), 500
+
+
+@app.route('/api/transactions', methods=['POST'])
+@token_required
+def create_transaction():
+    """Mock creating a transaction"""
+    try:
+        data = request.get_json()
+        transaction_id = 'mock-tx-' + str(uuid.uuid4())[:8]
+        return jsonify({
+            'success': True,
+            'transaction_id': transaction_id,
+            'message': 'Transaction created successfully (Mocked)'
+        }), 201
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/transactions/analyze', methods=['POST'])
+@token_required
+def analyze_transaction():
+    """Mock transaction analysis using the fraud detection service"""
+    try:
+        from services.fraud_detection_service import fraud_detection_service
+        data = request.get_json()
+        
+        # Use a dummy user profile for analysis
+        dummy_user = {
+            'user_id': 'mock-user-123',
+            'email': 'mock@example.com',
+            'phone': '+919876543210',
+            'known_devices': ['device_12345'],
+            'created_at': datetime.utcnow()
+        }
+        
+        analysis = fraud_detection_service.analyze_transaction(data, dummy_user)
+        return jsonify(analysis), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/transactions/<transaction_id>', methods=['PUT', 'PATCH'])
+@token_required
+def update_transaction(transaction_id):
+    """Mock updating a transaction"""
+    return jsonify({
+        'success': True,
+        'message': f'Transaction {transaction_id} updated successfully (Mocked)'
+    }), 200
+
+
+@app.route('/api/transactions', methods=['GET'])
+@token_required
+def get_transactions():
+    """Mock getting transactions"""
+    return jsonify({
+        'success': True,
+        'transactions': [
+            {
+                'transaction_id': 'mock-tx-1',
+                'amount': 50000,
+                'recipient_name': 'Dhrup',
+                'recipient_upi': 'dhrup@icici',
+                'timestamp': datetime.utcnow().isoformat(),
+                'status': 'completed',
+                'is_fraudulent': False,
+                'risk_level': 'low'
+            }
+        ]
+    }), 200
 
 
 @app.errorhandler(404)
