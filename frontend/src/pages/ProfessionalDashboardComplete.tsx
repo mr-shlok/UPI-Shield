@@ -726,12 +726,28 @@ const ProfessionalDashboardComplete: React.FC = () => {
               <button className="p-2 rounded-lg hover:bg-gray-700/50 text-gray-300 bg-gray-800/50 backdrop-blur-sm border border-blue-500/30">
                 <FiBell size={20} />
               </button>
-              <button
-                onClick={() => setProfileOpen(!profileOpen)}
-                className="p-2 rounded-lg hover:bg-gray-700/50 text-gray-300 bg-gray-800/50 backdrop-blur-sm border border-blue-500/30"
-              >
-                <FiUser size={20} />
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="p-2 rounded-lg hover:bg-gray-700/50 text-gray-300 bg-gray-800/50 backdrop-blur-sm border border-blue-500/30"
+                >
+                  <FiUser size={20} />
+                </button>
+                <AnimatePresence>
+                  {profileOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg py-1 bg-gray-800/90 backdrop-blur-lg border border-blue-500/30 ring-1 ring-black ring-opacity-5 z-50"
+                    >
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white">Profile</a>
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white">Settings</a>
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white">Logout</a>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               <button
                 onClick={toggleDarkMode}
                 className="p-2 rounded-lg hover:bg-gray-700/50 text-gray-300 bg-gray-800/50 backdrop-blur-sm border border-blue-500/30"
@@ -897,147 +913,7 @@ const ProfessionalDashboardComplete: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Profile Dropdown */}
-      <AnimatePresence>
-        {profileOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-14 right-4 bg-black/95 backdrop-blur-md shadow-lg z-40 rounded-lg"
-          >
-            <div className="p-4">
-              <div className="flex items-center space-x-3">
-                <div className="relative w-12 h-12">
-                  {/* Animated glow effect */}
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.3, 1],
-                      opacity: [0.4, 0.7, 0.4],
-                    }}
-                    transition={{ duration: 2.5, repeat: Infinity }}
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg blur-lg"
-                  />
-                  
-                  {/* Shield SVG */}
-                  <svg
-                    width="48"
-                    height="48"
-                    viewBox="0 0 48 48"
-                    className="relative z-10"
-                    style={{
-                      filter: 'drop-shadow(0 4px 8px rgba(59,130,246,0.4))',
-                    }}
-                  >
-                    <defs>
-                      <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#60a5fa" />
-                        <stop offset="50%" stopColor="#3b82f6" />
-                        <stop offset="100%" stopColor="#06b6d4" />
-                      </linearGradient>
-                    </defs>
-                    
-                    {/* Shield Shape */}
-                    <motion.path
-                      d="M24 4 L42 12 L42 24 C42 30 38 38 24 42 C10 38 6 30 6 24 L6 12 Z"
-                      fill="url(#shieldGrad)"
-                      stroke="#60a5fa"
-                      strokeWidth="1.5"
-                      animate={{
-                        strokeOpacity: [0.5, 1, 0.5],
-                      }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                    
-                    {/* Lock Icon */}
-                    <rect x="19" y="22" width="10" height="8" rx="1.5" fill="#fff" opacity="0.95"/>
-                    <path 
-                      d="M20 22 L20 19 C20 17 21.5 15.5 24 15.5 C26.5 15.5 28 17 28 19 L28 22" 
-                      fill="none" 
-                      stroke="#1e40af" 
-                      strokeWidth="2" 
-                      strokeLinecap="round"
-                    />
-                    <circle cx="24" cy="25.5" r="1.2" fill="#1e40af"/>
-                    <line x1="24" y1="26.7" x2="24" y2="28.5" stroke="#1e40af" strokeWidth="1.2" strokeLinecap="round"/>
-                  </svg>
-                </div>
-                
-                <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">UPI Shield</h1>
-                  <p className="text-xs text-blue-300/80">Secure Your Transactions</p>
-                </div>
-              </motion.div>
-            </div>
 
-            {/* Center - Search Bar */}
-            <div className="hidden md:flex flex-1 max-w-lg mx-6">
-              <div className="relative w-full rounded-lg bg-gray-700/50 backdrop-blur-sm border border-blue-500/30">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiSearch className="text-blue-400" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search transactions or alerts"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-white placeholder-blue-300/70"
-                />
-              </div>
-            </div>
-
-            {/* Right side - Icons and Profile */}
-            <div className="flex items-center space-x-4">
-              <motion.button 
-                onClick={toggleDarkMode}
-                className="p-2 rounded-lg hover:bg-gray-700/50 text-gray-300"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                {darkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
-              </motion.button>
-              
-              <motion.button 
-                className="p-2 rounded-lg hover:bg-gray-700/50 text-gray-300"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <FiBell size={20} />
-              </motion.button>
-              
-              <div className="relative">
-                <motion.button 
-                  onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700/50 text-gray-300"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                    <FiUser size={16} className="text-white" />
-                  </div>
-                  <FiChevronDown size={16} />
-                </motion.button>
-                
-                <AnimatePresence>
-                  {profileOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg py-1 bg-gray-800/90 backdrop-blur-lg border border-blue-500/30 ring-1 ring-black ring-opacity-5"
-                    >
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white">Profile</a>
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white">Settings</a>
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white">Logout</a>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.header>
 
       <div className="flex">
         {/* Sidebar Navigation with Home Page Styling */}
