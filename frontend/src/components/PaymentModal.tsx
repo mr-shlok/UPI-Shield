@@ -50,14 +50,37 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, onPaymentS
         type: 'UPI',
         timestamp: new Date().toISOString(),
         status: 'completed',
-        // Add fraud detection parameters
+        // --- 20+ Fraud Detection Parameters (Simulated for ML Model) ---
+        // 1. Transaction-based
+        transaction_type: 'UPI',
+        time_of_day: new Date().getHours(), // For Odd hours/late night detection
+        rapid_transaction_count: Math.floor(Math.random() * 3), // Multiple rapid transactions
+        
+        // 2. User Behavior
         login_location: 'Mumbai, India',
-        device_id: 'device_12345',
-        session_duration: 300,
-        failed_attempts: 0,
+        device_id: 'device_' + Math.floor(Math.random() * 10000), // New/multiple devices
+        device_type: 'mobile-app',
+        session_duration_minutes: Math.floor(Math.random() * 60) + 5, // Short/long sessions
+        failed_login_attempts: 0,
+        
+        // 3. Payment Receiver
+        receiver_trust_score: Math.floor(Math.random() * 40) + 60, // Low trust merchants simulator
+        is_unknown_vpa: false, // Unknown/blacklisted VPAs
+        frequent_recipient_changes: false,
         merchant_category: 'peer-to-peer',
-        location: 'India',
-        recent_transactions_count: 3
+        
+        // 4. Network & Security
+        ip_address: `192.168.1.${Math.floor(Math.random() * 255)}`,
+        vpn_proxy_usage: false, // VPN/proxy usage
+        app_version: '1.2.4', // Outdated apps detection
+        is_2fa_enabled: true, // Accounts without 2FA
+        location_changed_recently: false, // Sudden location changes
+        
+        // 5. Historical & Contextual
+        prior_fraud_history: false,
+        velocity_spike: false, // Transaction velocity spikes
+        behavioral_pattern_score: 95 // Behavioral pattern changes
+        // ----------------------------------------------------------------
       };
 
       // Send transaction data to backend
@@ -86,7 +109,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, onPaymentS
         await api.put(`/transactions/${result.transaction_id}`, {
           is_fraudulent: analysisResult.is_fraudulent,
           risk_score: analysisResult.risk_score,
-          risk_level: analysisResult.risk_level
+          risk_level: analysisResult.risk_level,
+          fraud_factors: analysisResult.factors || []
         });
       }
 

@@ -1,260 +1,145 @@
-# UPI Shield - AI-Powered UPI Fraud Detection
+# 🛡️ UPI Shield: AI-Powered UPI Fraud Detection
 
-🛡️ **Protect Your UPI Transactions in Real-Time**
+<div align="center">
 
-UPI Shield is a comprehensive fraud detection application that uses advanced AI and machine learning to monitor, detect, and prevent fraudulent UPI transactions in real-time.
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Framer](https://img.shields.io/badge/Framer-black?style=for-the-badge&logo=framer&logoColor=blue)
+<br>
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
 
-## 🌟 Features
+**Secure, Real-time, and Intelligent Transaction Monitoring for the UPI Network.**
 
-- **Real-Time Fraud Detection** - Instant alerts for suspicious transactions
-- **AI-Powered Analytics** - Advanced behavior analysis and pattern recognition
-- **Secure Dashboard** - Beautiful, intuitive interface for monitoring
-- **Comprehensive Reports** - Exportable reports for businesses and banks
-- **Regulatory Compliance** - Full RBI and NPCI compliance
-- **24/7 Monitoring** - Round-the-clock transaction protection
-
-## 🚀 Tech Stack
-
-### Frontend
-- **React.js** with TypeScript
-- **Tailwind CSS** for styling
-- **Framer Motion** for animations
-- **React Icons** for icon library
-- **Vite** for build tooling
-
-### Backend
-- **Flask** (Python web framework)
-- **Flask-CORS** for cross-origin requests
-- RESTful API architecture
-
-## 📦 Installation
-
-### Prerequisites
-- Node.js (v18 or higher)
-- Python (v3.8 or higher)
-- npm or yarn
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm run dev
-```
-
-The frontend will be available at `http://localhost:5173`
-
-### Backend Setup
-
-1. Navigate to the backend directory:
-```bash
-cd backend
-```
-
-2. Create a virtual environment (recommended):
-```bash
-python -m venv venv
-```
-
-3. Activate the virtual environment:
-- Windows:
-```bash
-venv\Scripts\activate
-```
-- macOS/Linux:
-```bash
-source venv/bin/activate
-```
-
-4. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-5. Run the Flask server (Local Mock Mode):
-```bash
-python app_new.py
-```
-
-For full Firebase integration (requires credentials):
-```bash
-python app_firebase.py
-```
-
-The backend API will be available at `http://localhost:5000`
-
-## 🎨 Design Features
-
-### Homepage Sections
-
-1. **Header/Navigation Bar**
-   - Professional logo and branding
-   - Responsive navigation menu
-   - Login/Signup buttons
-
-2. **Hero Section**
-   - Compelling headline with trust-inducing messaging
-   - Clear call-to-action buttons
-   - Animated security visuals
-   - Key statistics and metrics
-
-3. **Features Section**
-   - 6 core features with icons and descriptions
-   - Hover animations and interactive elements
-   - Gradient backgrounds
-
-4. **How It Works**
-   - 4-step process visualization
-   - Flow diagram
-   - Animated transitions
-
-5. **Testimonials**
-   - Client reviews and ratings
-   - Partner bank logos
-   - Trust indicators
-
-6. **Pricing Section**
-   - 3 pricing tiers (Starter, Professional, Enterprise)
-   - Feature comparison
-   - Money-back guarantee
-
-7. **Security & Compliance**
-   - Security certifications
-   - Compliance badges
-   - Trust indicators
-
-8. **Footer**
-   - Contact information
-   - Quick links
-   - Newsletter subscription
-   - Social media links
-
-## 🎭 Animations
-
-The app features smooth, professional animations using Framer Motion:
-- Fade-in effects
-- Slide animations
-- Scale transitions
-- Floating elements
-- Pulse effects
-- Hover interactions
-
-## 🔌 API Endpoints
-
-### GET `/api/health`
-Health check endpoint
-
-### GET `/api/stats`
-Get transaction statistics
-
-### GET `/api/alerts`
-Get fraud alerts
-
-### POST `/api/transaction/analyze`
-Analyze a transaction for fraud
-
-### GET `/api/dashboard`
-Get dashboard data
-
-### POST `/api/contact`
-Handle contact form submissions
-
-### POST `/api/subscribe`
-Handle newsletter subscriptions
-
-## 🎨 Color Scheme
-
-- **Primary**: Blue shades for trust and security
-- **Success**: Green for safe transactions
-- **Warning**: Orange/Yellow for alerts
-- **Danger**: Red for threats and blocks
-- **Neutral**: Gray for backgrounds and text
-
-## 📱 Responsive Design
-
-The application is fully responsive and works seamlessly on:
-- Desktop (1920px and above)
-- Laptop (1024px - 1920px)
-- Tablet (768px - 1024px)
-- Mobile (320px - 768px)
-
-## 🔒 Security Features
-
-- End-to-end encryption
-- HTTPS/SSL support
-- CORS protection
-- Input validation
-- Rate limiting ready
-- Secure authentication ready
-
-## 🛠️ Development
-
-### Available Scripts
-
-Frontend:
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-
-### Initialize Firestore Collections
-
-To initialize Firestore with sample data:
-
-1. Navigate to the backend directory:
-```bash
-cd backend
-```
-
-2. Run the initialization script:
-```bash
-python init_firestore.py
-```
-
-This will create the required collections (`users`, `transactions`, `fraud_logs`, `sessions`) with sample data.
-
-### Test Transaction Endpoints
-
-To test the transaction endpoints:
-
-1. Make sure the backend server is running:
-```bash
-python app_firebase.py
-```
-
-2. In another terminal, run the test script:
-```bash
-python test_transactions.py
-```
-
-This will register a test user, create transactions, and verify the endpoints are working correctly.
-- `npm run preview` - Preview production build
-
-Backend:
-- `python app_new.py` - Start Flask server in Local Mock Mode (Recommended)
-- `python train_fraud_model.py` - Train the fraud detection model locally
-- `python debug_transaction.py` - Run an end-to-end test of the mock flow
-- `python app.py` - Start standard Flask server
-
-## 📄 License
-
-This project is proprietary software developed for UPI Shield.
-
-## 🤝 Support
-
-For support, email support@upishield.com or call +91 1800-123-4567
-
-## 👥 Team
-
-Built with ❤️ by the UPI Shield Team
+</div>
 
 ---
 
-**© 2025 UPI Shield. All rights reserved.**
+## 📖 Overview
+
+**UPI Shield** is a state-of-the-art fraud detection platform designed to protect users and businesses from malicious transactions across the Unified Payments Interface (UPI) network. 
+
+By uniting a heavily optimized **React + Framer Motion** frontend with a robust **Flask + Firebase Auth/Firestore** backend, UPI Shield analyzes over 20+ live transaction parameters—including device trust, location bounding, and recipient IP blacklists—to instantly neutralize threats before funds leave the user's account.
+
+---
+
+## ✨ Core Features
+
+* 🚀 **Real-Time Fraud Engine:** Proprietary backend models that analyze transaction velocity, time-of-day anomalies, and recipient VPAs instantly.
+* 📈 **Advanced Analytics Dashboard:** A stunning, fully animated dashboard featuring interactive caching flow monitors, live 24h transaction velocity telemetry, and merchant trust distribution charts.
+* 🔐 **Enterprise-Grade Account Security:** Native integration with Firebase authentication, offering interactive app preferences, Two-Factor Authentication tracking, and live session monitoring.
+* ⚡ **Instant Processing:** Zero-latency UI updates utilizing dynamic React state syncing with Firestore persistence.
+* 🤖 **AI Chat Agent:** Native intelligent support agent capable of resolving user transaction disputes and answering security queries.
+
+---
+
+## 🏗️ Technology Stack
+
+### Frontend Architecture
+* **Framework**: React 19 + TypeScript
+* **Build Tool**: Vite
+* **Styling**: Tailwind CSS
+* **Animations**: Framer Motion
+* **Data Visualization**: Recharts & Bespoke CSS Telemetry
+* **Icons**: React Icons (`react-icons/fi`)
+
+### Backend Architecture
+* **Framework**: Python / Flask
+* **Database**: Firebase Firestore (NoSQL)
+* **Auth**: Firebase Admin SDK
+* **Cross-Origin**: Flask-CORS
+* **Machine Learning**: Custom Sklearn/Pandas pipeline models
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to run UPI Shield locally on your machine.
+
+### Prerequisites
+* Node.js (v18+)
+* Python (v3.8+)
+* A valid Firebase Project with Firestore and Authentication enabled (for production mode)
+
+### 1. Frontend Setup
+```bash
+# Navigate to the frontend directory
+cd ./frontend
+
+# Install node dependencies
+npm install
+
+# Start the Vite development server
+npm run dev
+```
+> The frontend will be accessible at `http://localhost:5173`.
+
+### 2. Backend Setup
+```bash
+# Navigate to the backend directory
+cd ./backend
+
+# Create and activate a Virtual Environment
+python -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
+
+# Install python dependencies dependencies
+pip install -r requirements.txt
+```
+
+#### Choose Your Backend Mode:
+UPI Shield supports two backend execution modes:
+* **Production / Live Firebase Mode (Recommended)**: Utilizes real Firestore databases. Requires your `firebase-credentials.json` secret key inside the backend folder.
+  ```bash
+  python app_firebase.py
+  ```
+* **Local Mock Mode**: Ideal for UI development without hitting API rate limits.
+  ```bash
+  python app_new.py
+  ```
+
+---
+
+## 🗄️ Project Structure
+
+```text
+UPI-Shield/
+├── frontend/                 # React Application
+│   ├── src/
+│   │   ├── components/       # Reusable UI components (Modals, Charts)
+│   │   ├── pages/            # View-level components (UserDashboard.tsx)
+│   │   ├── services/         # API & Firebase configurations
+│   ├── package.json
+│   └── tailwind.config.js
+│
+└── backend/                  # Flask Application
+    ├── models/               # ML Models and training scripts
+    ├── app_firebase.py       # Production server entrypoint
+    ├── app_new.py            # Local mock server entrypoint
+    ├── test_transactions.py  # E2E Firebase integration tests
+    └── requirements.txt
+```
+
+---
+
+## 🛡️ Security & Privacy Architecture
+
+UPI Shield takes data privacy seriously. The frontend utilizes hardened input validations and sanitization. The backend enforces structured data definitions before any data hits Firestore. 
+* **Session Management**: Bulletproof JWT handling mapped to Firebase.
+* **Component Stability**: Heavily tested layout animations preventing React render-tree crashes (`layoutId` collision protections).
+* **Data Sandboxing**: Strict Firebase rules ensuring users can only read/write their own transaction scopes.
+
+---
+
+## 🤝 Contributing & Support
+
+We welcome contributions to UPI Shield! Please follow the conventional commit standard and ensure UI components pass ESLint checks before opening a pull request.
+* **Linting**: `npm run lint` (Frontend)
+* **Testing AI Models**: `python test_fraud_risk.py` (Backend)
+
+For enterprise inquiries or support, please contact the development team at `security@upishield.com`.
+
+---
+*Built with ❤️ by the UPI Shield Team.*
