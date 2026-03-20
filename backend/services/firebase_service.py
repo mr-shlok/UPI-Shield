@@ -35,7 +35,7 @@ class FirebaseService:
             is_placeholder = True
         
         if not has_creds or is_placeholder:
-            print(f"⚠️  Firebase credentials not found or placeholder detected. Entering MOCK MODE.")
+            print(f"[WARNING] Firebase credentials not found or placeholder detected. Entering MOCK MODE.")
             self.mock_mode = True
             self.db = None
             return
@@ -48,10 +48,10 @@ class FirebaseService:
             
             # Get Firestore client
             self.db = firestore.client()
-            print("✅ Firebase initialized successfully")
+            print("[SUCCESS] Firebase initialized successfully")
             
         except Exception as e:
-            print(f"⚠️  Firebase initialization error: {str(e)}. Falling back to MOCK MODE.")
+            print(f"[WARNING] Firebase initialization error: {str(e)}. Falling back to MOCK MODE.")
             self.mock_mode = True
             self.db = None
     

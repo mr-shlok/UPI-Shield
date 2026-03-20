@@ -14,10 +14,10 @@ def initialize_firebase():
         cred = credentials.Certificate('firebase-credentials.json')
         if not firebase_admin._apps:
             firebase_admin.initialize_app(cred)
-        print("✅ Firebase initialized successfully")
+        print("[SUCCESS] Firebase initialized successfully")
         return firestore.client()
     except Exception as e:
-        print(f"❌ Firebase initialization error: {str(e)}")
+        print(f"[ERROR] Firebase initialization error: {str(e)}")
         return None
 
 def create_sample_data(db):
@@ -44,7 +44,7 @@ def create_sample_data(db):
         }
         
         db.collection('users').document('user_12345').set(sample_user)
-        print("✅ Created sample user")
+        print("[SUCCESS] Created sample user")
         
         # Create sample transactions
         sample_transactions = [
@@ -98,7 +98,7 @@ def create_sample_data(db):
         for i, transaction in enumerate(sample_transactions):
             doc_ref = db.collection('transactions').document(f'txn_00{i+1}')
             doc_ref.set(transaction)
-        print("✅ Created sample transactions")
+        print("[SUCCESS] Created sample transactions")
         
         # Create sample fraud logs
         sample_fraud_logs = [
@@ -124,7 +124,7 @@ def create_sample_data(db):
         
         for i, fraud_log in enumerate(sample_fraud_logs):
             db.collection('fraud_logs').add(fraud_log)
-        print("✅ Created sample fraud logs")
+        print("[SUCCESS] Created sample fraud logs")
         
         # Create sample session
         sample_session = {
@@ -135,9 +135,9 @@ def create_sample_data(db):
         }
         
         db.collection('sessions').document('session_12345').set(sample_session)
-        print("✅ Created sample session")
+        print("[SUCCESS] Created sample session")
         
-        print("\n✅ All sample data created successfully!")
+        print("\n[SUCCESS] All sample data created successfully!")
         print("\nYou can now view the collections in your Firebase Console:")
         print("- users")
         print("- transactions")
@@ -145,7 +145,7 @@ def create_sample_data(db):
         print("- sessions")
         
     except Exception as e:
-        print(f"❌ Error creating sample data: {str(e)}")
+        print(f"[ERROR] Error creating sample data: {str(e)}")
 
 def main():
     """Main function to initialize Firestore"""
@@ -153,7 +153,7 @@ def main():
     
     # Check if credentials file exists
     if not os.path.exists('firebase-credentials.json'):
-        print("❌ firebase-credentials.json not found!")
+        print("[ERROR] firebase-credentials.json not found!")
         print("Please ensure you have downloaded your Firebase credentials file.")
         return
     
@@ -165,7 +165,7 @@ def main():
     # Create sample data
     create_sample_data(db)
     
-    print("\n🎉 Firestore initialization complete!")
+    print("\n[SUCCESS] Firestore initialization complete!")
     print("Refresh your Firebase Console to see the new collections.")
 
 if __name__ == "__main__":
